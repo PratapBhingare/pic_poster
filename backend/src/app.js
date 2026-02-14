@@ -1,9 +1,14 @@
 const express = require("express");
-const app = express();
+const cors = require("cors");
+const multer = require("multer");
 const postModel = require("./models/posts.model");
+const upload_image = require("./services/storage.service");
 
-
+const app = express();
+app.use(cors());
 app.use(express.json());
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.get("/posts", async (req, res) => {
   const posts = await postModel.find();
@@ -14,9 +19,12 @@ app.get("/posts", async (req, res) => {
   });
 });
 
-app.post("/posts", async (req, res) => {
+app.post("/create-posts", upload.single("image"), async (req, res) => {
+
+    const result = await upload_image(req.file.buffer);
+
   const post = await postModel.create({
-    image: req.body.image,
+    image: result.url,
     caption: req.body.caption,
   });
 
