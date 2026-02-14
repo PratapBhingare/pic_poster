@@ -1,5 +1,9 @@
-const express = require("express");
+const app = require("./src/app")
+const connect = require("./src/db/db");
 
-const app = express();
+connect();
 
-module.exports = app;
+app.listen(3000, () => {
+    console.log("connected to port 3000")
+});
+
